@@ -28,6 +28,7 @@ capturaInformacion = pd.DataFrame(columns=[
     "Sexo",
     "Edad",
     "Nombre",
+    "Fecha de nacimiento",
     "Categoria",
     "Telefono fijo",
     "Telefono móvil"
@@ -35,7 +36,6 @@ capturaInformacion = pd.DataFrame(columns=[
 
 
 # Creamos la logica para recorrer el dataframe y poder proceder con las extracciones
-
 def capturarCedulas(dataframe):
     for index, row in dataframe.iterrows():
         time.sleep(1)
@@ -64,12 +64,14 @@ def capturarCedulas(dataframe):
             sexo = driver.find_element(By.XPATH, "//tr[5]/td[3]").text.strip().replace("Sexo", "").strip()
             edad = driver.find_element(By.XPATH, "//tr[5]/td[4]").text.strip().replace("Edad", "").strip()
             nombre = driver.find_element(By.XPATH, "//tr[6]/td[1]").text.strip().replace("Nombre", "").strip()
+            Fecha_de_nacimiento = driver.find_element(By.XPATH, "//tr[6]/td[1]").text.strip().replace("Nombre", "").strip()
             categoria = driver.find_element(By.XPATH, "//tr[9]/td[2]").text.strip().replace("Categoría", "").strip()
             telefono_fijo = driver.find_element(By.XPATH, "//tr[9]/td[3]").text.strip().replace("Teléfono fijo", "").strip()
             telefono_movil = driver.find_element(By.XPATH, "//tr[9]/td[4]").text.strip().replace("Teléfono móvil", "").strip()
+            
             # Agregar los datos al DataFrame
             capturaInformacion.loc[len(capturaInformacion)] = [
-                tipo_id, numero_id, tipo_afiliado, regimen, sexo, edad, nombre, categoria, telefono_fijo, telefono_movil
+                tipo_id, numero_id, tipo_afiliado, regimen, sexo, edad, nombre, Fecha_de_nacimiento, categoria, telefono_fijo, telefono_movil
             ]
 
             print(f"Información capturada para cédula {cedulaDataframe}:")
@@ -128,4 +130,3 @@ except:
     
 
 capturarCedulas(dataframe)
-    
