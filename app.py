@@ -1,4 +1,4 @@
-#1 importo las libreias que voy a utilizar, 
+#1 importo las libreias que voy a utilizar
 
 import os
 import time
@@ -19,8 +19,6 @@ Usuario = os.environ.get("usuarioNEPS")
 Clave = os.environ.get("claveNEPS")
 dataframe = pd.read_csv("cedulas.csv")
 
-
-
 #Listas para capturar informacion
 capturaInformacion = pd.DataFrame(columns=[
     "Tipo de identificacion",
@@ -36,8 +34,7 @@ capturaInformacion = pd.DataFrame(columns=[
 ])
 
 
-# Creamos la logica para recorrer el dataframe y poder proceder con las eliminaciones 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+# Creamos la logica para recorrer el dataframe y poder proceder con las extracciones
 
 def capturarCedulas(dataframe):
     for index, row in dataframe.iterrows():
@@ -48,7 +45,6 @@ def capturarCedulas(dataframe):
         tipoAfiliacion = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//select[@formcontrolname='tipoDocumento']")))
         tipoAfiliacion = Select(tipoAfiliacion)
         tipoAfiliacion.select_by_value("3")
-        
         identificacionCedula = driver.find_element(By.XPATH,"//input[@type='text ']")
         identificacionCedula.clear()
         identificacionCedula.send_keys(cedulaDataframe)
@@ -57,7 +53,7 @@ def capturarCedulas(dataframe):
 
         # Intentamos capturar la información de la tabla
         try:
-            # Aumentamos el tiempo de espera a 20 segundos para dar más margen
+            # Aumentamos el tiempo de espera a 10 segundos para dar más margen
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH,"//div[@id='respuesta']")))
 
             # Aquí va el código para extraer los datos de la tabla
@@ -71,7 +67,6 @@ def capturarCedulas(dataframe):
             categoria = driver.find_element(By.XPATH, "//tr[9]/td[2]").text.strip().replace("Categoría", "").strip()
             telefono_fijo = driver.find_element(By.XPATH, "//tr[9]/td[3]").text.strip().replace("Teléfono fijo", "").strip()
             telefono_movil = driver.find_element(By.XPATH, "//tr[9]/td[4]").text.strip().replace("Teléfono móvil", "").strip()
-
             # Agregar los datos al DataFrame
             capturaInformacion.loc[len(capturaInformacion)] = [
                 tipo_id, numero_id, tipo_afiliado, regimen, sexo, edad, nombre, categoria, telefono_fijo, telefono_movil
@@ -103,14 +98,11 @@ def capturarCedulas(dataframe):
     print("Proceso completado. Los datos se han guardado en 'informacion_afiliados.xlsx'.")
 
 
-
-
 #Instanciamos el driver para iniciar a trabajar con el.
 servise = Service("chromedriver.exe") #Usamos el webdriver de google, pues trabajaremos con chrome
 driver = webdriver.Chrome(service=servise)
 driver.get("https://solucionjb.nuevaeps.com.co/consultas-portal-w/#/") #Apuntamos a la URL deseada
 driver.maximize_window()
-
 
 botonUserExterno = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH,"//button[normalize-space()='USUARIO EXTERNO']")))
 print(botonUserExterno)
@@ -134,8 +126,6 @@ try:
 except:
     input("Error de Autenticacion")
     
-
-
 
 capturarCedulas(dataframe)
     
